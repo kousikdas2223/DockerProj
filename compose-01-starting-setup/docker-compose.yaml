@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  mongodb:
+    image: 'mongo'
+    volumes: 
+      - data:/data/db
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: daskous
+    #   MONGO_INITDB_ROOT_PASSWORD: dk338142
+    # Alternative approach
+    # env_file: 
+    #   - ./env/mongo.env
+    # Following config can be added but docker compose creates a network
+    # and all services can communicate with each other
+    # networks:
+    #   - multi-container-network
+  backend:
+    build: ./backend
+    # Following config can be added if the docker file
+    # is named differently, then it can be specified
+    # build: 
+    #   context: ./backend
+    #   dockerfile: Dockerfile-dev
+    # args:
+    #   some-arg:
+    ports:
+      - "80:80"
+    # Following config can be added but docker compose creates a network
+    # and all services can communicate with each other
+    # networks:
+    #   - multi-container-network
+    volumes:
+      - .logs:/app/logs
+      - "./backend:/app"
+      - /app/node_modules
+    # env_file:
+    #   - ./env/backend.env
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./frontend
+    ports: 
+      - '3000:3000'
+    volumes: 
+      - "./frontend/src:/app/src"
+    stdin_open: true
+    tty: true
+    depends_on: 
+      - backend
+volumes:
+  data:
+  logs:
+  
