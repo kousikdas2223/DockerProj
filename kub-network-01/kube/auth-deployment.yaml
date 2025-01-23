@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: daskous/mykuberepo:auth-api
+          imagePullPolicy: Always
+          # ports:
+          #   - containerPort: 8080
+          # volumeMounts:
+          #   - name: tasks-volume
+          #     mountPath: /tasks
